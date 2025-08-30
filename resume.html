@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume | Om Kekan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Neutral Professional (Eggshell, Charcoal, and Calm Blue) -->
+    <!-- Application Structure Plan: A tab-based Single Page Application (SPA) designed as an "Interactive Portfolio Hub". The structure uses a main navigation to switch between thematic sections (Overview, Experience, Projects, Skills, Education). This non-linear design is chosen for usability, allowing a busy recruiter to directly access the information they find most relevant (e.g., jump straight to "Skills" or "Experience"). The "Overview" acts as a landing dashboard with a visual summary of skills, encouraging immediate engagement. Key interactions include filtering the skills chart by category and viewing project details in an organized manner. This structure transforms the linear resume into an exploratory experience. -->
+    <!-- Visualization & Content Choices: 
+        - Summary: (Goal: Inform) -> Presented as a clear, prominent text block in the Overview.
+        - Technical Skills: (Goal: Compare/Organize) -> Visualized as an interactive bar chart using Chart.js. Interaction: Users can filter skills by category (Security, Backend, Frontend etc.), which dynamically updates the chart. Justification: This makes a long list of skills highly engaging and easy to digest, highlighting areas of expertise visually.
+        - Core Experience (RiskReveal): (Goal: Detail) -> Presented in a dedicated "Experience" section to give it prominence. Key metrics are bolded.
+        - Additional Projects: (Goal: Organize/Inform) -> Displayed as a grid of cards. Interaction: Clicking a card reveals details. Justification: Keeps the primary view uncluttered while allowing for deep dives.
+        - Education & Certs: (Goal: Inform) -> A clean, two-column layout using Tailwind Grid for clarity and professional presentation.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --cream: #FFF6ED;       /* pastel peach-cream page background */
+            --card:  #FFFBF7;       /* soft ivory card surfaces */
+            --ink:   #2B3440;       /* dark slate ink for AA contrast */
+            --ink-rgb: 43, 52, 64;
+
+            --brand: #7CC7C5;       /* primary: pastel teal */
+            --brand-rgb: 124, 199, 197;
+
+            /* optional accent available for future use */
+            --accent: #F8AFA6;      /* accent: pastel coral */
+            --accent-rgb: 248, 175, 166;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--cream);
+            color: var(--ink);
+        }
+
+        /* Harmonize default Tailwind grays to our ink color scale */
+        .text-gray-800 { color: var(--ink); }
+        .text-gray-700 { color: rgba(var(--ink-rgb), 0.85); }
+        .text-gray-600 { color: rgba(var(--ink-rgb), 0.70); }
+        .text-gray-500 { color: rgba(var(--ink-rgb), 0.60); }
+
+        /* Make white cards use a creamy surface and softer borders */
+        .bg-white { background-color: var(--card); }
+        .border-gray-200 { border-color: rgba(var(--ink-rgb), 0.10); }
+
+        /* Cards: subtle borders and soft shadows */
+        .card {
+            background-color: var(--card);
+            border: 1px solid rgba(var(--ink-rgb), 0.06);
+            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.06);
+            transition: transform 220ms ease, box-shadow 220ms ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(var(--ink-rgb), 0.12);
+        }
+
+        /* Navigation: softer underline and brand highlight */
+        nav {
+            border-bottom-color: rgba(var(--ink-rgb), 0.10);
+            background: rgba(255, 247, 233, 0.80);
+            backdrop-filter: blur(4px);
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-link:hover {
+            color: var(--brand);
+        }
+        .nav-link.active {
+            color: var(--brand);
+            border-bottom-color: var(--brand);
+        }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 500px; }
+        }
+
+        /* Filter buttons with creamy neutrals and brand active state */
+        .skill-btn {
+            transition: all 0.2s ease-in-out;
+            background: rgba(var(--ink-rgb), 0.04);
+            color: rgba(var(--ink-rgb), 0.85);
+            border: 1px solid rgba(var(--ink-rgb), 0.06);
+        }
+        .skill-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(44, 62, 80, 0.08);
+        }
+        .skill-btn.active {
+            background-color: var(--brand);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(var(--ink-rgb), 0.12);
+        }
+
+        /* Links and focus states for accessibility */
+        a { transition: color 0.2s ease; }
+        a:focus-visible, .skill-btn:focus-visible, .nav-link:focus-visible {
+            outline: 2px solid var(--brand);
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+
+        /* creamy-motion micro-animations and utilities */
+        .border-brand { border-color: var(--brand) !important; }
+        .avatar-wrap {
+            width: 7rem; height: 7rem;
+            border-radius: 9999px; 
+            overflow: hidden;
+            box-shadow: 0 10px 24px rgba(var(--ink-rgb), 0.10);
+            ring: 2px;
+        }
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }
+
+        .fade-in { animation: fadeIn 500ms ease-out both; }
+        .section-enter { animation: fadeUp 360ms ease-out both; }
+
+        .reveal-up { opacity: 0; transform: translateY(10px); }
+        .reveal-up.is-visible { animation: fadeUp 600ms ease-out both; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .fade-in, .section-enter, .reveal-up.is-visible { animation: none !important; }
+          .card:hover { transform: none; box-shadow: 0 8px 20px rgba(var(--ink-rgb), 0.06); }
+        }
+
+        /* Pastel progress bars to replace the chart */
+        .skill-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        @media (min-width: 640px) { .skill-list { grid-template-columns: 1fr 1fr; } }
+        .skill-item {
+            background: rgba(var(--ink-rgb), 0.04);
+            border: 1px solid rgba(var(--ink-rgb), 0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+            transition: transform 200ms ease, box-shadow 200ms ease;
+        }
+        .skill-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(var(--ink-rgb), 0.10);
+        }
+        .skill-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .skill-name { font-weight: 600; color: rgba(var(--ink-rgb), 0.90); }
+        .skill-badge {
+            background: rgba(var(--brand-rgb), 0.15);
+            color: rgba(var(--ink-rgb), 0.90);
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 12px;
+        }
+        .bar-track {
+            height: 10px;
+            background: rgba(var(--ink-rgb), 0.08);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            width: 0; /* animate from 0 -> --w */
+            background: var(--brand);
+            border-radius: 9999px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
+        }
+        @keyframes fill { from { width: 0 } to { width: var(--w, 0%) } }
+        .bar-fill.animate { animation: fill 900ms ease forwards; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bar-fill.animate { animation: none !important; width: var(--w, 0%) }
+        }
+
+        /* Loading overlay (pastel, accessible, reduced-motion friendly) */
+        .loading-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--cream);
+            transition: opacity 300ms ease;
+        }
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+        .loading-panel {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--card);
+            border: 1px solid rgba(var(--ink-rgb), 0.08);
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: 0 10px 24px rgba(var(--ink-rgb), 0.10);
+        }
+        .loading-spinner {
+            width: 22px; height: 22px;
+            border-radius: 9999px;
+            border: 3px solid rgba(var(--brand-rgb), 0.25);
+            border-top-color: var(--brand);
+            animation: spin 900ms linear infinite;
+        }
+        .loading-text { color: rgba(var(--ink-rgb), 0.85); font-weight: 600; }
+        @keyframes spin { to { transform: rotate(360deg) } }
+        @media (prefers-reduced-motion: reduce) {
+          .loading-spinner { animation: none; border-top-color: rgba(var(--brand-rgb), 0.65); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite" aria-label="Loading content">
+      <div class="loading-panel">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <span class="loading-text">Loading…</span>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <header class="text-center mb-12 fade-in">
+            <div class="mx-auto mb-5 w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-2" style="--tw-ring-color: rgba(var(--brand-rgb),0.35); box-shadow: 0 10px 24px rgba(44,62,80,0.10); transform: translateZ(0);">
+                <img src="D:\Om Kekan Passport Photo.png" alt="Profile photo of Om Kekan" class="w-full h-full object-cover" />
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Om Kekan</h1>
+            <p class="mt-2 text-lg text-gray-600">Cybersecurity Professional & AI/ML Enthusiast</p>
+            <p class="mt-1 text-sm text-gray-500">Chhatrapati Sambhajinagar, Maharashtra, India (431009) · <a class="hover:text-[var(--brand)]" href="tel:+918788882314">(+91) 8788882314</a></p>
+            <div class="mt-6 flex justify-center space-x-6 text-gray-500">
+                <a href="https://linkedin.com/in/omkekan/" target="_blank" class="hover:text-[var(--brand)] transition-colors">LinkedIn</a>
+                <a href="https://github.com/Omkekan" target="_blank" class="hover:text-[var(--brand)] transition-colors">GitHub</a>
+                <a href="mailto:omkekan27@gmail.com" class="hover:text-[var(--brand)] transition-colors">Email</a>
+            </div>
+        </header>
+
+        <nav class="flex justify-center border-b-2 border-gray-200 mb-8">
+            <a class="nav-link active py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="overview">Overview</a>
+            <a class="nav-link py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="experience">Experience</a>
+            <a class="nav-link py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="projects">Projects</a>
+            <a class="nav-link py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="education">Education & Certs</a>
+        </nav>
+
+        <main id="main-content">
+            <section id="overview" class="content-section active">
+                <div class="bg-white rounded-lg shadow-md p-8 mb-8 card reveal-up">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Professional Summary</h2>
+                    <p class="text-gray-600 leading-relaxed">
+                        A proactive and results-oriented professional specializing in the intersection of Cybersecurity and Artificial Intelligence. Currently pursuing a B.Tech in AI &amp; Machine Learning with demonstrated experience in building full-stack security applications from the ground up. Proven ability to architect and develop high-performance, automated systems for vulnerability assessment and threat intelligence. Eager to apply a unique blend of security principles and machine learning expertise to solve complex challenges and enhance an organization's defensive posture.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Technical Skills Dashboard</h2>
+                    <p class="text-center text-gray-500 mb-6">
+                        Explore my skills with pastel progress bars. Use the filters to view categories like Security, Languages, Frameworks, and Infra.
+                    </p>
+                    <div id="skill-filters" class="flex flex-wrap justify-center gap-2 mb-6">
+                        <button class="skill-btn active px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="all">All Skills</button>
+                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="security">Security Tools</button>
+                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="languages">Languages</button>
+                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="frameworks">Frameworks & Libraries</button>
+                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="infra">Infrastructure & DBs</button>
+                    </div>
+                    <div id="skillsList" class="skill-list" aria-live="polite">
+                        <!-- Skills will be rendered here -->
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-8 mt-8 card reveal-up">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Technical Proficiencies</h2>
+                    <div class="grid sm:grid-cols-2 gap-6 text-gray-600">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Security Tools</h3>
+                            <p>Nmap, Burp Suite Pro, Wireshark, SQLmap, Tenable Nessus, Nuclei, Metasploit</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Languages</h3>
+                            <p>Python, JavaScript, TypeScript, SQL, Java</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Frameworks &amp; Libraries</h3>
+                            <p>Flask, Celery, Next.js, React, SQLAlchemy, Pandas, TensorFlow, OpenCV, NLTK</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-2">Infrastructure &amp; Databases</h3>
+                            <p>Docker, Redis, PostgreSQL, SQLite, Git/GitHub</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="experience" class="content-section">
+                <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
+                    <h2 class="text-2xl font-bold mb-2 text-gray-700">Full-Stack Security Developer (Independent Project)</h2>
+                    <p class="text-md text-gray-500 mb-4">Chhatrapati Sambhajinagar, India | August 2025 – Present</p>
+                    
+                    <div class="border-l-4 border-brand pl-4">
+                        <h3 class="text-xl font-semibold text-gray-800">Project: RiskReveal - Full-Stack Vulnerability Scanner</h3>
+                        <p class="mt-2 text-gray-600">RiskReveal is a comprehensive, web-based vulnerability scanning application designed to provide deep insights into the security posture of network assets. Below are the key achievements and architectural highlights of its development.</p>
+                    </div>
+
+                    <ul class="mt-6 space-y-4 list-disc list-inside text-gray-600">
+                        <li>Engineered an intelligent risk prioritization engine that correlates data from <strong>3+ security feeds</strong> (200,000+ CVEs, 1,000+ CWEs) to reduce vulnerability noise by an estimated <strong>90%</strong> compared to raw scanner output.</li>
+                        <li>Architected a high-performance backend using Celery and Redis, capable of processing up to <strong>50 concurrent scans</strong> and reducing manual scan configuration time by over <strong>70%</strong> through automation.</li>
+                        <li>Built a full-stack security dashboard with Next.js, creating over <strong>15 reusable components</strong> that improved development speed by <strong>25%</strong> and enabled the generation of detailed PDF reports in under <strong>5 seconds</strong>.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="projects" class="content-section">
+                <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Additional Projects</h2>
+                    <p class="text-center text-gray-500 mb-8">Beyond my core experience, I have developed several other projects that showcase my skills in AI/ML and software development. These projects demonstrate my ability to apply complex algorithms and data processing techniques to solve real-world problems.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="border border-gray-200 rounded-lg p-6 card reveal-up">
+                            <h3 class="text-xl font-semibold text-gray-800">Face Recognition System</h3>
+                            <ul class="mt-4 space-y-3 text-gray-600 list-disc list-inside">
+                                <li>Developed a real-time facial detection and recognition system using Python and OpenCV, achieving a processing speed of <strong>30 FPS</strong> for seamless live environment integration.</li>
+                                <li>Improved recognition accuracy by <strong>20%</strong> across varied lighting conditions by leveraging OpenCV's pre-trained models.</li>
+                            </ul>
+                        </div>
+                        <div class="border border-gray-200 rounded-lg p-6 card reveal-up">
+                            <h3 class="text-xl font-semibold text-gray-800">Sentiment Analysis Model</h3>
+                            <ul class="mt-4 space-y-3 text-gray-600 list-disc list-inside">
+                                <li>Built and trained a machine learning model to perform sentiment analysis on social media text data, achieving <strong>85% accuracy</strong> in classifying user sentiment.</li>
+                                <li>Utilized Python's NLTK library for NLP tasks, enhancing model performance by <strong>15%</strong>.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="education" class="content-section">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
+                        <h2 class="text-2xl font-bold mb-4 text-gray-700">Education</h2>
+                        <h3 class="text-lg font-semibold text-gray-800">Bachelor of Technology, Artificial Intelligence &amp; Machine Learning</h3>
+                        <p class="text-gray-500">MGM University | Chh. Sambhajinagar, India</p>
+                        <p class="text-gray-500 mb-4">(Oct 2021 - June 2026)</p>
+                        <h4 class="font-semibold mt-4 text-gray-700">Relevant Coursework:</h4>
+                        <ul class="mt-2 space-y-1 text-gray-600 list-disc list-inside">
+                           <li>Data Structures &amp; Algorithms</li>
+                           <li>Network Security</li>
+                           <li>Cryptography</li>
+                           <li>Database Management Systems</li>
+                           <li>Secure Software Development</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
+                        <h2 class="text-2xl font-bold mb-4 text-gray-700">Certifications &amp; Achievements</h2>
+                        <h4 class="font-semibold text-gray-700">Professional Certifications:</h4>
+                        <ul class="mt-2 mb-6 space-y-1 text-gray-600 list-disc list-inside">
+                            <li>Google Cybersecurity Professional</li>
+                            <li>Certified Cyber Security Professional</li>
+                            <li>Certified Ethical Hacker (CEH)</li>
+                            <li>Generative AI Fundamentals, Google</li>
+                            <li>Introduction to Large Language Models, Google</li>
+                            <li>Responsible AI: Applying AI Principles, Google</li>
+                        </ul>
+                        <h4 class="font-semibold text-gray-700">Leadership &amp; Achievements:</h4>
+                        <ul class="mt-2 space-y-1 text-gray-600 list-disc list-inside">
+                            <li><strong>Event Coordinator,</strong> University Youth Festival (Dec 2024): Coordinated logistics and scheduling for events with over <strong>500 participants</strong>.</li>
+                            <li><strong>First Place,</strong> Taalvadya (Percussion) Competition, Youth Festival (Dec 2024).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <script>
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        const skillFilters = document.querySelectorAll('.skill-btn');
+
+        const skillsData = [
+            { name: 'Nmap', category: 'security', level: 90 },
+            { name: 'Burp Suite', category: 'security', level: 85 },
+            { name: 'Wireshark', category: 'security', level: 80 },
+            { name: 'SQLmap', category: 'security', level: 75 },
+            { name: 'Nessus', category: 'security', level: 88 },
+            { name: 'Nuclei', category: 'security', level: 82 },
+            { name: 'Python', category: 'languages', level: 95 },
+            { name: 'JavaScript', category: 'languages', level: 85 },
+            { name: 'TypeScript', category: 'languages', level: 80 },
+            { name: 'SQL', category: 'languages', level: 80 },
+            { name: 'Java', category: 'languages', level: 70 },
+            { name: 'Flask', category: 'frameworks', level: 85 },
+            { name: 'Celery', category: 'frameworks', level: 80 },
+            { name: 'Next.js', category: 'frameworks', level: 90 },
+            { name: 'React', category: 'frameworks', level: 88 },
+            { name: 'SQLAlchemy', category: 'frameworks', level: 78 },
+            { name: 'Pandas', category: 'frameworks', level: 82 },
+            { name: 'TensorFlow', category: 'frameworks', level: 75 },
+            { name: 'Docker', category: 'infra', level: 80 },
+            { name: 'Redis', category: 'infra', level: 85 },
+            { name: 'PostgreSQL', category: 'infra', level: 78 },
+            { name: 'Git/GitHub', category: 'infra', level: 95 }
+        ];
+
+        function renderSkillsList(filter = 'all') {
+            const listEl = document.getElementById('skillsList');
+            const filteredSkills = skillsData.filter(skill => filter === 'all' || skill.category === filter).sort((a, b) => b.level - a.level);
+
+            listEl.innerHTML = filteredSkills.map(skill => {
+                const capCat = skill.category.charAt(0).toUpperCase() + skill.category.slice(1);
+                return `
+                    <div class="skill-item reveal-up" data-skill="${skill.name}">
+                        <div class="skill-head">
+                            <span class="skill-name">${skill.name}</span>
+                            <span class="skill-badge">${capCat} • ${skill.level}%</span>
+                        </div>
+                        <div class="bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${skill.level}" aria-label="${skill.name} proficiency">
+                            <div class="bar-fill" style="--w: ${skill.level}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            // trigger animations for newly added bars when visible
+            document.querySelectorAll('.skill-item .bar-fill').forEach(el => barObserver.observe(el));
+            document.querySelectorAll('.skill-item.reveal-up').forEach(el => revealObserver.observe(el));
+        }
+
+        // Keep navigation logic intact
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const target = link.getAttribute('data-target');
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                contentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === target);
+                    if (section.id === target) {
+                        section.classList.add('section-enter');
+                        setTimeout(() => section.classList.remove('section-enter'), 400);
+                    }
+                });
+            });
+        });
+
+        // Update filter handlers to use the new list renderer
+        skillFilters.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+                skillFilters.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                renderSkillsList(filter);
+            });
+        });
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        const barObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                    barObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.25 });
+
+        function hideLoader() {
+            const overlay = document.getElementById('loading-overlay');
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            // remove after transition to keep DOM clean
+            setTimeout(() => overlay.remove(), 350);
+        }
+
+        window.onload = () => {
+            renderSkillsList('all');
+
+            // Observe any existing reveal-up elements outside the skills list
+            document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
+
+            hideLoader();
+        };
+    </script>
+</body>
+</html>
