@@ -3,497 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Om Kekan Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Neutral Professional (Eggshell, Charcoal, and Calm Blue) -->
-    <!-- Application Structure Plan: A tab-based Single Page Application (SPA) designed as an "Interactive Portfolio Hub". The structure uses a main navigation to switch between thematic sections (Overview, Experience, Projects, Skills, Education). This non-linear design is chosen for usability, allowing a busy recruiter to directly access the information they find most relevant (e.g., jump straight to "Skills" or "Experience"). The "Overview" acts as a landing dashboard with a visual summary of skills, encouraging immediate engagement. Key interactions include filtering the skills chart by category and viewing project details in an organized manner. This structure transforms the linear resume into an exploratory experience. -->
-    <!-- Visualization & Content Choices: 
-        - Summary: (Goal: Inform) -> Presented as a clear, prominent text block in the Overview.
-        - Technical Skills: (Goal: Compare/Organize) -> Visualized as an interactive bar chart using Chart.js. Interaction: Users can filter skills by category (Security, Backend, Frontend etc.), which dynamically updates the chart. Justification: This makes a long list of skills highly engaging and easy to digest, highlighting areas of expertise visually.
-        - Core Experience (RiskReveal): (Goal: Detail) -> Presented in a dedicated "Experience" section to give it prominence. Key metrics are bolded.
-        - Additional Projects: (Goal: Organize/Inform) -> Displayed as a grid of cards. Interaction: Clicking a card reveals details. Justification: Keeps the primary view uncluttered while allowing for deep dives.
-        - Education & Certs: (Goal: Inform) -> A clean, two-column layout using Tailwind Grid for clarity and professional presentation.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <style>
-        :root {
-            --cream: #FFF6ED;       /* pastel peach-cream page background */
-            --card:  #FFFBF7;       /* soft ivory card surfaces */
-            --ink:   #2B3440;       /* dark slate ink for AA contrast */
-            --ink-rgb: 43, 52, 64;
+    <title>Om Kekan | AI/ML Engineer</title>
+    <meta name="description" content="Om Kekan — AI/ML Engineer building evaluation-driven ML systems, from self-correcting RAG pipelines to production backends.">
 
-            --brand: #7CC7C5;       /* primary: pastel teal */
-            --brand-rgb: 124, 199, 197;
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Om Kekan | AI/ML Engineer">
+    <meta property="og:description" content="Evaluation-driven ML systems — self-correcting RAG pipelines, AI agents, and production backends.">
+    <meta property="og:image" content="Assets/Profile Picture.jpeg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Om Kekan | AI/ML Engineer">
+    <meta name="twitter:description" content="Evaluation-driven ML systems — self-correcting RAG pipelines, AI agents, and production backends.">
+    <meta name="twitter:image" content="Assets/Profile Picture.jpeg">
 
-            /* optional accent available for future use */
-            --accent: #F8AFA6;      /* accent: pastel coral */
-            --accent-rgb: 248, 175, 166;
-        }
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--cream);
-            color: var(--ink);
-        }
-
-        /* Harmonize default Tailwind grays to our ink color scale */
-        .text-gray-800 { color: var(--ink); }
-        .text-gray-700 { color: rgba(var(--ink-rgb), 0.85); }
-        .text-gray-600 { color: rgba(var(--ink-rgb), 0.70); }
-        .text-gray-500 { color: rgba(var(--ink-rgb), 0.60); }
-
-        /* Make white cards use a creamy surface and softer borders */
-        .bg-white { background-color: var(--card); }
-        .border-gray-200 { border-color: rgba(var(--ink-rgb), 0.10); }
-
-        /* Cards: subtle borders and soft shadows */
-        .card {
-            background-color: var(--card);
-            border: 1px solid rgba(var(--ink-rgb), 0.06);
-            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.06);
-            transition: transform 220ms ease, box-shadow 220ms ease;
-        }
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 14px 30px rgba(var(--ink-rgb), 0.12);
-        }
-
-        /* Navigation: softer underline and brand highlight */
-        nav {
-            border-bottom-color: rgba(var(--ink-rgb), 0.10);
-            background: rgba(255, 247, 233, 0.80);
-            backdrop-filter: blur(4px);
-        }
-        .nav-link {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .nav-link:hover {
-            color: var(--brand);
-        }
-        .nav-link.active {
-            color: var(--brand);
-            border-bottom-color: var(--brand);
-        }
-
-        .content-section { display: none; }
-        .content-section.active { display: block; }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 400px;
-            max-height: 50vh;
-        }
-        @media (min-width: 768px) {
-            .chart-container { height: 500px; }
-        }
-
-        /* Filter buttons with creamy neutrals and brand active state */
-        .skill-btn {
-            transition: all 0.2s ease-in-out;
-            background: rgba(var(--ink-rgb), 0.04);
-            color: rgba(var(--ink-rgb), 0.85);
-            border: 1px solid rgba(var(--ink-rgb), 0.06);
-        }
-        .skill-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(44, 62, 80, 0.08);
-        }
-        .skill-btn.active {
-            background-color: var(--brand);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(var(--ink-rgb), 0.12);
-        }
-
-        /* Links and focus states for accessibility */
-        a { transition: color 0.2s ease; }
-        a:focus-visible, .skill-btn:focus-visible, .nav-link:focus-visible {
-            outline: 2px solid var(--brand);
-            outline-offset: 2px;
-            border-radius: 6px;
-        }
-
-        /* creamy-motion micro-animations and utilities */
-        .border-brand { border-color: var(--brand) !important; }
-        .avatar-wrap {
-            width: 7rem; height: 7rem;
-            border-radius: 9999px; 
-            overflow: hidden;
-            box-shadow: 0 10px 24px rgba(var(--ink-rgb), 0.10);
-            ring: 2px;
-        }
-        .avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-        @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }
-
-        .fade-in { animation: fadeIn 500ms ease-out both; }
-        .section-enter { animation: fadeUp 360ms ease-out both; }
-
-        .reveal-up { opacity: 0; transform: translateY(10px); }
-        .reveal-up.is-visible { animation: fadeUp 600ms ease-out both; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .fade-in, .section-enter, .reveal-up.is-visible { animation: none !important; }
-          .card:hover { transform: none; box-shadow: 0 8px 20px rgba(var(--ink-rgb), 0.06); }
-        }
-
-        /* Pastel progress bars to replace the chart */
-        .skill-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 640px) { .skill-list { grid-template-columns: 1fr 1fr; } }
-        .skill-item {
-            background: rgba(var(--ink-rgb), 0.04);
-            border: 1px solid rgba(var(--ink-rgb), 0.06);
-            border-radius: 12px;
-            padding: 12px 14px;
-            transition: transform 200ms ease, box-shadow 200ms ease;
-        }
-        .skill-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(var(--ink-rgb), 0.10);
-        }
-        .skill-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-        .skill-name { font-weight: 600; color: rgba(var(--ink-rgb), 0.90); }
-        .skill-badge {
-            background: rgba(var(--brand-rgb), 0.15);
-            color: rgba(var(--ink-rgb), 0.90);
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 9999px;
-            font-size: 12px;
-        }
-        .bar-track {
-            height: 10px;
-            background: rgba(var(--ink-rgb), 0.08);
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-        .bar-fill {
-            height: 100%;
-            width: 0; /* animate from 0 -> --w */
-            background: var(--brand);
-            border-radius: 9999px;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.3);
-        }
-        @keyframes fill { from { width: 0 } to { width: var(--w, 0%) } }
-        .bar-fill.animate { animation: fill 900ms ease forwards; }
-
-        @media (prefers-reduced-motion: reduce) {
-            .bar-fill.animate { animation: none !important; width: var(--w, 0%) }
-        }
-
-        /* Loading overlay (pastel, accessible, reduced-motion friendly) */
-        .loading-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            background: var(--cream);
-            transition: opacity 300ms ease;
-        }
-        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-        .loading-panel {
-            display: flex; align-items: center; gap: 12px;
-            background: var(--card);
-            border: 1px solid rgba(var(--ink-rgb), 0.08);
-            border-radius: 14px;
-            padding: 14px 18px;
-            box-shadow: 0 10px 24px rgba(var(--ink-rgb), 0.10);
-        }
-        .loading-spinner {
-            width: 22px; height: 22px;
-            border-radius: 9999px;
-            border: 3px solid rgba(var(--brand-rgb), 0.25);
-            border-top-color: var(--brand);
-            animation: spin 900ms linear infinite;
-        }
-        .loading-text { color: rgba(var(--ink-rgb), 0.85); font-weight: 600; }
-        @keyframes spin { to { transform: rotate(360deg) } }
-        @media (prefers-reduced-motion: reduce) {
-          .loading-spinner { animation: none; border-top-color: rgba(var(--brand-rgb), 0.65); }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="portfolio.css?v=3">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="portfolio.js?v=3" defer></script>
 </head>
-<body class="antialiased">
-    <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite" aria-label="Loading content">
-      <div class="loading-panel">
-        <div class="loading-spinner" aria-hidden="true"></div>
-        <span class="loading-text">Loading…</span>
-      </div>
-    </div>
+<body>
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="scroll-progress"></div>
+<div id="terminal-toast"></div>
 
-        <header class="text-center mb-12 fade-in">
-            <div class="mx-auto mb-5 w-28 h-28 md:w-32 md:h-32 rounded-full overflow-hidden ring-2" style="--tw-ring-color: rgba(var(--brand-rgb),0.35); box-shadow: 0 10px 24px rgba(44,62,80,0.10); transform: translateZ(0);">
-                <img src="Om Kekan Passport Photo.png" alt="Profile photo of Om Kekan" class="w-full h-full object-cover" />
-            </div>
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Om Kekan</h1>
-            <p class="mt-2 text-lg text-gray-600">Cybersecurity Professional & AI/ML Enthusiast</p>
-            <p class="mt-1 text-sm text-gray-500">Chhatrapati Sambhajinagar, Maharashtra, India (431009) · </p>
-            <div class="mt-6 flex justify-center space-x-6 text-gray-500">
-                <a href="https://linkedin.com/in/omkekan/" target="_blank" class="hover:text-[var(--brand)] transition-colors">LinkedIn</a>
-                <a href="https://github.com/Omkekan" target="_blank" class="hover:text-[var(--brand)] transition-colors">GitHub</a>
-                <a href="mailto:omkekan27@gmail.com" class="hover:text-[var(--brand)] transition-colors">Email</a>
-            </div>
-        </header>
+<!-- True 3D WebGL Background -->
+<div id="webgl-container"></div>
+<div class="aurora-mesh blob-1"></div>
+<div class="aurora-mesh blob-2"></div>
+<div class="aurora-mesh blob-3"></div>
+<div class="noise-overlay"></div>
 
-        <nav class="flex justify-center border-b-2 border-gray-200 mb-8">
-            <a class="nav-link active py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="overview">Overview</a>
-            <a class="nav-link py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="experience">Experience</a>
-            <a class="nav-link py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="projects">Projects</a>
-            <a class="nav-link py-4 px-6 text-gray-600 hover:text-[var(--brand)] border-b-2 border-transparent" data-target="education">Education & Certs</a>
-        </nav>
+<!-- Initial Loader -->
+<div id="loader">
+    <div class="loader-track"><div class="loader-fill"></div></div>
+    <div class="font-mono text-xs text-muted mt-2 scramble-on-load" data-value="SYS.INIT // AGI_CORE_ONLINE">SYS.INIT // AGI_CORE_ONLINE</div>
+</div>
 
-        <main id="main-content">
-            <section id="overview" class="content-section active">
-                <div class="bg-white rounded-lg shadow-md p-8 mb-8 card reveal-up">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Professional Summary</h2>
-                    <p class="text-gray-600 leading-relaxed">
-                        A proactive and results-oriented professional specializing in the intersection of Cybersecurity and Artificial Intelligence. Currently pursuing a B.Tech in AI &amp; Machine Learning with demonstrated experience in building full-stack security applications from the ground up. Proven ability to architect and develop high-performance, automated systems for vulnerability assessment and threat intelligence. Eager to apply a unique blend of security principles and machine learning expertise to solve complex challenges and enhance an organization's defensive posture.
+<main id="app" class="container">
+    
+    <!-- HERO SECTION -->
+    <header class="hero reveal">
+        <div class="hero-status font-mono text-xs text-accent mb-3 d-flex align-center gap-2">
+            <span class="pulse-dot"></span> OPEN TO WORK 
+            <span class="text-muted ml-2">|</span> 
+            <span class="text-muted">Currently building:</span> <span class="text-white">Multi-agent Eval Frameworks</span>
+        </div>
+        
+        <div class="mask-wrapper mb-2">
+            <h1 class="hero-title tracking-tight text-liquid mask-up font-outfit">Om Kekan</h1>
+        </div>
+        
+        <div class="mask-wrapper mb-4">
+            <h2 class="hero-subtitle font-mono text-muted mask-up scramble-on-load" data-value="> AI/ML Engineer">> AI/ML Engineer</h2>
+        </div>
+
+        <p class="hero-desc text-muted mb-5 reveal-delay">
+            Building evaluation-driven ML systems—from self-correcting RAG pipelines to robust production backends. I quantify model reliability rather than relying on anecdotal testing.
+        </p>
+        
+        <div class="hero-links d-flex gap-3 reveal-delay-2 align-center">
+            <a href="mailto:omkekan27@gmail.com" class="btn-magnetic primary-btn magnetic-target scramble-hover" data-value="Initialize Contact">Initialize Contact</a>
+            <a href="Assets/Om_Kekan_Resume.pdf" target="_blank" class="btn-magnetic secondary-btn magnetic-target">Resume</a>
+            <a href="https://github.com/Omkekan" target="_blank" class="btn-magnetic secondary-btn magnetic-target">GitHub</a>
+            <a href="https://linkedin.com/in/omkekan" target="_blank" class="btn-magnetic secondary-btn magnetic-target">LinkedIn</a>
+            
+            <span class="font-mono text-muted text-xs ml-3 d-none-mobile pop-out-2" style="cursor: pointer;" onclick="document.getElementById('cmd-palette').showModal()">
+                <span style="border:1px solid var(--card-border-idle); padding:3px 6px; border-radius:4px; margin-right:6px; background: rgba(255,255,255,0.03);">Cmd K</span> Navigation
+            </span>
+        </div>
+    </header>
+
+    <!-- 3D SPATIAL GRID LAYOUT -->
+    <div class="spatial-grid">
+
+        <!-- ABOUT -->
+        <section class="spatial-card reveal card-wide" id="about">
+            <div class="card-content d-flex flex-col h-100">
+                <div class="d-flex justify-between align-center mb-4 pop-out-1">
+                    <h3 class="text-white fs-5 fw-500 font-outfit">About</h3>
+                    <span class="font-mono text-xs text-muted">00 // PROFILE</span>
+                </div>
+                <div class="d-flex gap-4 align-center pop-out-2">
+                    <img src="Assets/Profile Picture.jpeg" alt="Om Kekan" class="about-photo">
+                    <p class="text-muted text-sm flex-grow">
+                        I specialize in building intelligent systems that can evaluate their own outputs. Whether constructing retrieval-augmented pipelines or automating data classification, my focus is bridging the gap between theoretical AI models and reliable, scalable production systems.
                     </p>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Technical Skills Dashboard</h2>
-                    <p class="text-center text-gray-500 mb-6">
-                        Explore my skills with pastel progress bars. Use the filters to view categories like Security, Languages, Frameworks, and Infra.
-                    </p>
-                    <div id="skill-filters" class="flex flex-wrap justify-center gap-2 mb-6">
-                        <button class="skill-btn active px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="all">All Skills</button>
-                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="security">Security Tools</button>
-                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="languages">Languages</button>
-                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="frameworks">Frameworks & Libraries</button>
-                        <button class="skill-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm font-medium" data-filter="infra">Infrastructure & DBs</button>
-                    </div>
-                    <div id="skillsList" class="skill-list" aria-live="polite">
-                        <!-- Skills will be rendered here -->
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-md p-8 mt-8 card reveal-up">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Technical Proficiencies</h2>
-                    <div class="grid sm:grid-cols-2 gap-6 text-gray-600">
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-2">Security Tools</h3>
-                            <p>Nmap, Burp Suite Pro, Wireshark, SQLmap, Tenable Nessus, Nuclei, Metasploit</p>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-2">Languages</h3>
-                            <p>Python, JavaScript, TypeScript, SQL, Java</p>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-2">Frameworks &amp; Libraries</h3>
-                            <p>Flask, Celery, Next.js, React, SQLAlchemy, Pandas, TensorFlow, OpenCV, NLTK</p>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-gray-800 mb-2">Infrastructure &amp; Databases</h3>
-                            <p>Docker, Redis, PostgreSQL, SQLite, Git/GitHub</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            </div>
+        </section>
 
-            <section id="experience" class="content-section">
-                <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
-                    <h2 class="text-2xl font-bold mb-2 text-gray-700">Full-Stack Security Developer (Independent Project)</h2>
-                    <p class="text-md text-gray-500 mb-4">Chhatrapati Sambhajinagar, India | August 2025 – Present</p>
+        <!-- TECH STACK -->
+        <section class="spatial-card reveal card-wide" id="stack">
+            <div class="card-content d-flex flex-col h-100">
+                <div class="d-flex justify-between align-center mb-4 pop-out-1">
+                    <h3 class="text-white fs-5 fw-500 font-outfit">Tech Stack</h3>
+                    <span class="font-mono text-xs text-muted">01 // SKILLS</span>
+                </div>
+                <div class="stack-layout grid-3 gap-4 flex-grow">
+                    <div class="pop-out-2">
+                        <h4 class="font-mono text-xs mb-2 color-pink">CORE_ML</h4>
+                        <p class="text-muted text-sm">TensorFlow, PyTorch, Scikit-learn, Pandas, Computer Vision, NLP</p>
+                    </div>
+                    <div class="pop-out-2" style="transition-delay: 0.05s;">
+                        <h4 class="font-mono text-xs mb-2 color-purple">GEN_AI</h4>
+                        <p class="text-muted text-sm">LangChain, LangGraph, RAGAS, Ollama, LLMs, RAG</p>
+                    </div>
+                    <div class="pop-out-2" style="transition-delay: 0.1s;">
+                        <h4 class="font-mono text-xs mb-2 color-cyan">BACKEND</h4>
+                        <p class="text-muted text-sm">Python, Flask, Next.js, Redis, Qdrant, PostgreSQL, Linux</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUTO-SCROLLING PROJECTS CAROUSEL -->
+        <section class="spatial-card reveal card-wide" id="projects-carousel">
+            <div class="card-content p-0 h-100 d-flex flex-col" id="carousel-hover-area">
+                <div class="carousel-container w-100">
                     
-                    <div class="border-l-4 border-brand pl-4">
-                        <h3 class="text-xl font-semibold text-gray-800">Project: RiskReveal - Full-Stack Vulnerability Scanner</h3>
-                        <p class="mt-2 text-gray-600">RiskReveal is a comprehensive, web-based vulnerability scanning application designed to provide deep insights into the security posture of network assets. Below are the key achievements and architectural highlights of its development.</p>
-                    </div>
-
-                    <ul class="mt-6 space-y-4 list-disc list-inside text-gray-600">
-                        <li>Engineered an intelligent risk prioritization engine that correlates data from <strong>3+ security feeds</strong> (200,000+ CVEs, 1,000+ CWEs) to reduce vulnerability noise by an estimated <strong>90%</strong> compared to raw scanner output.</li>
-                        <li>Architected a high-performance backend using Celery and Redis, capable of processing up to <strong>50 concurrent scans</strong> and reducing manual scan configuration time by over <strong>70%</strong> through automation.</li>
-                        <li>Built a full-stack security dashboard with Next.js, creating over <strong>15 reusable components</strong> that improved development speed by <strong>25%</strong> and enabled the generation of detailed PDF reports in under <strong>5 seconds</strong>.</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section id="projects" class="content-section">
-                <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
-                    <h2 class="text-2xl font-bold mb-4 text-gray-700">Additional Projects</h2>
-                    <p class="text-center text-gray-500 mb-8">Beyond my core experience, I have developed several other projects that showcase my skills in AI/ML and software development. These projects demonstrate my ability to apply complex algorithms and data processing techniques to solve real-world problems.</p>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div class="border border-gray-200 rounded-lg p-6 card reveal-up">
-                            <h3 class="text-xl font-semibold text-gray-800">Face Recognition System</h3>
-                            <ul class="mt-4 space-y-3 text-gray-600 list-disc list-inside">
-                                <li>Developed a real-time facial detection and recognition system using Python and OpenCV, achieving a processing speed of <strong>30 FPS</strong> for seamless live environment integration.</li>
-                                <li>Improved recognition accuracy by <strong>20%</strong> across varied lighting conditions by leveraging OpenCV's pre-trained models.</li>
-                            </ul>
+                    <!-- SLIDE 1: RAG AGENT -->
+                    <div class="carousel-slide active d-flex flex-col">
+                        <div class="d-flex justify-between align-center mb-4 pop-out-1">
+                            <span class="font-mono text-xs color-cyan glow-cyan">FEATURED PROJECT</span>
+                            <span class="font-mono text-xs text-muted">02 // PROJ [1/2]</span>
                         </div>
-                        <div class="border border-gray-200 rounded-lg p-6 card reveal-up">
-                            <h3 class="text-xl font-semibold text-gray-800">Sentiment Analysis Model</h3>
-                            <ul class="mt-4 space-y-3 text-gray-600 list-disc list-inside">
-                                <li>Built and trained a machine learning model to perform sentiment analysis on social media text data, achieving <strong>85% accuracy</strong> in classifying user sentiment.</li>
-                                <li>Utilized Python's NLTK library for NLP tasks, enhancing model performance by <strong>15%</strong>.</li>
-                            </ul>
+                        <div class="mask-wrapper mb-2 pop-out-2">
+                            <h3 class="text-white fs-4 fw-500 mask-up font-outfit">Autonomous RAG Agent</h3>
+                        </div>
+                        
+                        <div class="pop-out-3 svg-wrapper">
+                            <!-- CRITICAL FIX: explicit width="100%" forced on SVGs so they can never blow out the screen -->
+                            <svg viewBox="0 0 480 60" width="100%" style="max-width: 100%; height: auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+                                <style>
+                                    .bx-c { fill: rgba(0,243,255,0.05); stroke: rgba(0,243,255,0.4); stroke-width: 1; rx: 4; }
+                                    .tx-c { fill: #8b93a1; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-anchor: middle; dominant-baseline: middle; }
+                                    .ar-c { stroke: rgba(255,255,255,0.2); stroke-width: 1; fill: none; marker-end: url(#arrow-c); }
+                                </style>
+                                <defs><marker id="arrow-c" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.2)" /></marker></defs>
+                                
+                                <rect class="bx-c" x="0" y="20" width="60" height="20"/> <text class="tx-c" x="30" y="31">Query</text>
+                                <path class="ar-c" d="M 60 30 L 75 30"/>
+                                
+                                <rect class="bx-c" x="80" y="20" width="65" height="20"/> <text class="tx-c" x="112.5" y="31">Retrieve</text>
+                                <path class="ar-c" d="M 145 30 L 160 30"/>
+                                
+                                <rect class="bx-c" x="165" y="20" width="95" height="20"/> <text class="tx-c" x="212.5" y="31">Rel. Grade</text>
+                                <path class="ar-c" d="M 260 30 L 275 30"/>
+                                
+                                <rect class="bx-c" x="280" y="20" width="75" height="20"/> <text class="tx-c" x="317.5" y="31">Generate</text>
+                                <path class="ar-c" d="M 355 30 L 370 30"/>
+                                
+                                <rect class="bx-c" x="375" y="20" width="100" height="20"/> <text class="tx-c" x="425" y="31">Halluc Check</text>
+                                
+                                <path class="ar-c" d="M 425 20 L 425 5 L 212.5 5 L 212.5 20" stroke-dasharray="2,2"/>
+                            </svg>
+                        </div>
+
+                        <p class="text-muted text-sm mb-4 pop-out-1" style="max-width: 85%;">
+                            Self-correcting pipeline in LangGraph with retrieval-relevance grading and automatic query rewriting. Engineered to detect and regenerate unsupported answers at runtime.
+                        </p>
+                        <div class="tag-group mb-4 pop-out-3">
+                            <span class="tech-tag border-cyan">LangGraph</span>
+                            <span class="tech-tag border-cyan">Qdrant</span>
+                            <span class="tech-tag border-cyan">Ollama</span>
+                        </div>
+                        
+                        <div class="d-flex gap-3 align-center mt-auto pop-out-4">
+                            <a href="https://github.com/Omkekan/Auto-RAG-Agent-with-Hallucination-Guardrails" target="_blank" class="btn-magnetic link-arrow magnetic-target scramble-hover color-cyan" data-value="View Source &rarr;">View Source &rarr;</a>
+                            <button class="btn-magnetic secondary-btn text-xs px-2 magnetic-target expand-case-study" data-study="rag">Read Case Study</button>
                         </div>
                     </div>
-                </div>
-            </section>
 
-            <section id="education" class="content-section">
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
-                        <h2 class="text-2xl font-bold mb-4 text-gray-700">Education</h2>
-                        <h3 class="text-lg font-semibold text-gray-800">Bachelor of Technology, Artificial Intelligence &amp; Machine Learning</h3>
-                        <p class="text-gray-500">MGM University | Chh. Sambhajinagar, India</p>
-                        <p class="text-gray-500 mb-4">(Oct 2021 - June 2026)</p>
-                        <h4 class="font-semibold mt-4 text-gray-700">Relevant Coursework:</h4>
-                        <ul class="mt-2 space-y-1 text-gray-600 list-disc list-inside">
-                           <li>Data Structures &amp; Algorithms</li>
-                           <li>Network Security</li>
-                           <li>Cryptography</li>
-                           <li>Database Management Systems</li>
-                           <li>Secure Software Development</li>
-                        </ul>
+                    <!-- SLIDE 2: VULN SCANNER -->
+                    <div class="carousel-slide d-flex flex-col">
+                        <div class="d-flex justify-between align-center mb-4 pop-out-1">
+                            <span class="font-mono text-xs color-pink glow-pink">SECURITY AUTOMATION</span>
+                            <span class="font-mono text-xs text-muted">02 // PROJ [2/2]</span>
+                        </div>
+                        <div class="mask-wrapper mb-2 pop-out-2">
+                            <h3 class="text-white fs-4 fw-500 mask-up font-outfit">Web Vuln Scanner</h3>
+                        </div>
+
+                        <div class="pop-out-3 svg-wrapper">
+                            <!-- CRITICAL FIX: explicit width="100%" forced on SVGs so they can never blow out the screen -->
+                            <svg viewBox="0 0 480 65" width="100%" style="max-width: 100%; height: auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+                                <style>
+                                    .bx-p { fill: rgba(255,0,124,0.05); stroke: rgba(255,0,124,0.4); stroke-width: 1; rx: 4; }
+                                    .tx-p { fill: #8b93a1; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-anchor: middle; dominant-baseline: middle; }
+                                    .ar-p { stroke: rgba(255,255,255,0.2); stroke-width: 1; fill: none; marker-end: url(#arrow-p); }
+                                </style>
+                                <defs><marker id="arrow-p" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="rgba(255,255,255,0.2)" /></marker></defs>
+                                
+                                <rect class="bx-p" x="0" y="5" width="55" height="15"/> <text class="tx-p" x="27.5" y="14">NVD</text>
+                                <rect class="bx-p" x="0" y="25" width="55" height="15"/> <text class="tx-p" x="27.5" y="34">Exploit</text>
+                                <rect class="bx-p" x="0" y="45" width="55" height="15"/> <text class="tx-p" x="27.5" y="54">GH Adv.</text>
+                                
+                                <path class="ar-p" d="M 55 13 L 85 33"/>
+                                <path class="ar-p" d="M 55 33 L 85 33"/>
+                                <path class="ar-p" d="M 55 53 L 85 33"/>
+                                
+                                <rect class="bx-p" x="90" y="20" width="115" height="25"/> <text class="tx-p" x="147.5" y="34">Correlation Engine</text>
+                                <path class="ar-p" d="M 205 33 L 235 33"/>
+                                
+                                <rect class="bx-p" x="240" y="20" width="100" height="25"/> <text class="tx-p" x="290" y="34">Priority Filter</text>
+                                <path class="ar-p" d="M 340 33 L 370 33"/>
+                                
+                                <rect class="bx-p" x="375" y="20" width="100" height="25"/> <text class="tx-p" x="425" y="34">~90% Reduct.</text>
+                            </svg>
+                        </div>
+
+                        <p class="text-muted text-sm mb-4 pop-out-1" style="max-width: 85%;">
+                            Risk-prioritization engine correlating 3+ security feeds, cutting vulnerability noise by ~90%. Built on a high-performance Celery/Redis backend.
+                        </p>
+                        <div class="tag-group mb-4 pop-out-3">
+                            <span class="tech-tag border-pink">Flask</span>
+                            <span class="tech-tag border-pink">Redis</span>
+                            <span class="tech-tag border-pink">Next.js</span>
+                        </div>
+                        
+                        <div class="d-flex gap-3 align-center mt-auto pop-out-4">
+                            <a href="https://github.com/Omkekan/Riskreveal-Vulnerability-scanner" target="_blank" class="btn-magnetic link-arrow magnetic-target scramble-hover color-pink" data-value="View Source &rarr;">View Source &rarr;</a>
+                            <button class="btn-magnetic secondary-btn text-xs px-2 magnetic-target expand-case-study" data-study="vuln">Read Case Study</button>
+                        </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-md p-8 card reveal-up">
-                        <h2 class="text-2xl font-bold mb-4 text-gray-700">Certifications &amp; Achievements</h2>
-                        <h4 class="font-semibold text-gray-700">Professional Certifications:</h4>
-                        <ul class="mt-2 mb-6 space-y-1 text-gray-600 list-disc list-inside">
-                            <li>Google Cybersecurity Professional</li>
-                            <li>Certified Cyber Security Professional</li>
-                            <li>Certified Ethical Hacker (CEH)</li>
-                            <li>Generative AI Fundamentals, Google</li>
-                            <li>Introduction to Large Language Models, Google</li>
-                            <li>Responsible AI: Applying AI Principles, Google</li>
-                        </ul>
-                        <h4 class="font-semibold text-gray-700">Leadership &amp; Achievements:</h4>
-                        <ul class="mt-2 space-y-1 text-gray-600 list-disc list-inside">
-                            <li><strong>Event Coordinator,</strong> University Youth Festival (Dec 2024): Coordinated logistics and scheduling for events with over <strong>500 participants</strong>.</li>
-                            <li><strong>First Place,</strong> Taalvadya (Percussion) Competition, Youth Festival (Dec 2024).</li>
-                        </ul>
+
+                </div>
+
+                <div class="carousel-nav pop-out-4">
+                    <button class="carousel-dot magnetic-target active" data-slide="0"></button>
+                    <button class="carousel-dot magnetic-target" data-slide="1"></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section class="spatial-card reveal card-wide" id="exp">
+            <div class="card-content d-flex flex-col h-100">
+                <div class="d-flex justify-between align-center mb-4 pop-out-1">
+                    <h3 class="text-white fs-5 fw-500 font-outfit">Experience & Education</h3>
+                    <span class="font-mono text-xs text-muted">03 // LOG</span>
+                </div>
+                
+                <div class="d-flex gap-4 exp-grid">
+                    <div class="flex-grow pop-out-2">
+                        <h4 class="font-mono color-purple text-sm mb-1">Operational Assistant Intern</h4>
+                        <p class="text-white text-xs mb-2 opacity-70">Inspira Technologies</p>
+                        <p class="text-muted text-sm">Developed backend services, API endpoints, and a chatbot module for automated query handling.</p>
+                    </div>
+                    
+                    <div class="flex-grow pop-out-3 border-left-md">
+                        <h4 class="font-mono color-cyan text-sm mb-1">B.Tech, AI & ML</h4>
+                        <p class="text-white text-xs opacity-70 mb-2">IICT MGMU | Oct 2021 – Aug 2026</p>
+                        <p class="text-muted text-sm">Deep Learning Specialization (DeepLearning.AI), Intro to LLMs & Generative AI Fundamentals (Google).</p>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
+
+        <!-- DATA FEEDS -->
+        <div class="api-wrapper reveal card-wide mt-5" id="data-feeds">
+            <div class="d-flex justify-between align-center mb-3">
+                <h3 class="text-white fs-5 fw-500 font-outfit">Live Data Feeds</h3>
+                <span class="font-mono text-xs text-muted">04 // API</span>
+            </div>
+            <div class="grid-3 gap-3">
+                <div class="spatial-card api-card" id="github-card"></div>
+                <div class="spatial-card api-card" id="medium-card"></div>
+                <div class="spatial-card api-card" id="linkedin-card"></div>
+            </div>
+        </div>
 
     </div>
 
-    <script>
-        const navLinks = document.querySelectorAll('.nav-link');
-        const contentSections = document.querySelectorAll('.content-section');
-        const skillFilters = document.querySelectorAll('.skill-btn');
+    <!-- FOOTER -->
+    <footer class="site-footer border-top mt-5 pt-4">
+        <div class="d-flex justify-center gap-3 mb-3">
+            <a href="mailto:omkekan27@gmail.com" class="btn-magnetic link-arrow magnetic-target color-cyan">Email</a>
+            <a href="https://github.com/Omkekan" target="_blank" class="btn-magnetic link-arrow magnetic-target color-cyan">GitHub</a>
+            <a href="https://linkedin.com/in/omkekan" target="_blank" class="btn-magnetic link-arrow magnetic-target color-cyan">LinkedIn</a>
+        </div>
+        <span class="font-mono text-xs text-muted">// Om Kekan — built with obsessive attention to detail</span>
+    </footer>
+</main>
 
-        const skillsData = [
-            { name: 'Nmap', category: 'security', level: 90 },
-            { name: 'Burp Suite', category: 'security', level: 85 },
-            { name: 'Wireshark', category: 'security', level: 80 },
-            { name: 'SQLmap', category: 'security', level: 75 },
-            { name: 'Nessus', category: 'security', level: 88 },
-            { name: 'Nuclei', category: 'security', level: 82 },
-            { name: 'Python', category: 'languages', level: 95 },
-            { name: 'JavaScript', category: 'languages', level: 85 },
-            { name: 'TypeScript', category: 'languages', level: 80 },
-            { name: 'SQL', category: 'languages', level: 80 },
-            { name: 'Java', category: 'languages', level: 70 },
-            { name: 'Flask', category: 'frameworks', level: 85 },
-            { name: 'Celery', category: 'frameworks', level: 80 },
-            { name: 'Next.js', category: 'frameworks', level: 90 },
-            { name: 'React', category: 'frameworks', level: 88 },
-            { name: 'SQLAlchemy', category: 'frameworks', level: 78 },
-            { name: 'Pandas', category: 'frameworks', level: 82 },
-            { name: 'TensorFlow', category: 'frameworks', level: 75 },
-            { name: 'Docker', category: 'infra', level: 80 },
-            { name: 'Redis', category: 'infra', level: 85 },
-            { name: 'PostgreSQL', category: 'infra', level: 78 },
-            { name: 'Git/GitHub', category: 'infra', level: 95 }
-        ];
+<!-- COMMAND PALETTE MODAL -->
+<dialog id="cmd-palette" class="system-dialog">
+    <div class="dialog-content">
+        <div class="d-flex justify-between align-center mb-3 border-bottom pb-2">
+            <span class="font-mono text-xs text-muted">SYS.NAV // COMMAND_PALETTE</span>
+            <span class="font-mono text-xs text-muted border px-1 rounded" style="border: 1px solid var(--card-border-idle); padding: 2px 4px;">ESC to close</span>
+        </div>
+        <input type="text" id="cmd-input" class="cmd-input text-sm mb-3" placeholder="Search sections..." autocomplete="off">
+        <div class="cmd-list" id="cmd-list">
+            <a href="#about" class="cmd-item font-mono text-sm d-flex justify-between magnetic-target"><span>About</span><span class="text-muted text-xs">Profile</span></a>
+            <a href="#stack" class="cmd-item font-mono text-sm d-flex justify-between magnetic-target"><span>Tech Stack</span><span class="text-muted text-xs">Skills</span></a>
+            <a href="#projects-carousel" class="cmd-item font-mono text-sm d-flex justify-between magnetic-target"><span>Projects</span><span class="text-muted text-xs">Work</span></a>
+            <a href="#exp" class="cmd-item font-mono text-sm d-flex justify-between magnetic-target"><span>Experience</span><span class="text-muted text-xs">Log</span></a>
+            <a href="#data-feeds" class="cmd-item font-mono text-sm d-flex justify-between magnetic-target"><span>Data Feeds</span><span class="text-muted text-xs">API</span></a>
+            <a href="mailto:omkekan27@gmail.com" class="cmd-item font-mono text-sm d-flex justify-between color-cyan magnetic-target"><span>Contact</span><span class="text-muted text-xs">Email</span></a>
+        </div>
+    </div>
+</dialog>
 
-        function renderSkillsList(filter = 'all') {
-            const listEl = document.getElementById('skillsList');
-            const filteredSkills = skillsData.filter(skill => filter === 'all' || skill.category === filter).sort((a, b) => b.level - a.level);
+<!-- EXPANDABLE CASE STUDY MODAL -->
+<dialog id="case-study-modal" class="system-dialog">
+    <div class="dialog-content" style="max-height: 85vh; overflow-y: auto;">
+        <div id="case-study-content"></div>
+        <button class="btn-magnetic secondary-btn font-mono text-xs mt-4 w-100 magnetic-target" onclick="document.getElementById('case-study-modal').close()">Close [ESC]</button>
+    </div>
+</dialog>
 
-            listEl.innerHTML = filteredSkills.map(skill => {
-                const capCat = skill.category.charAt(0).toUpperCase() + skill.category.slice(1);
-                return `
-                    <div class="skill-item reveal-up" data-skill="${skill.name}">
-                        <div class="skill-head">
-                            <span class="skill-name">${skill.name}</span>
-                            <span class="skill-badge">${capCat} • ${skill.level}%</span>
-                        </div>
-                        <div class="bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${skill.level}" aria-label="${skill.name} proficiency">
-                            <div class="bar-fill" style="--w: ${skill.level}%"></div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            // trigger animations for newly added bars when visible
-            document.querySelectorAll('.skill-item .bar-fill').forEach(el => barObserver.observe(el));
-            document.querySelectorAll('.skill-item.reveal-up').forEach(el => revealObserver.observe(el));
-        }
-
-        // Keep navigation logic intact
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                const target = link.getAttribute('data-target');
-                navLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                contentSections.forEach(section => {
-                    section.classList.toggle('active', section.id === target);
-                    if (section.id === target) {
-                        section.classList.add('section-enter');
-                        setTimeout(() => section.classList.remove('section-enter'), 400);
-                    }
-                });
-            });
-        });
-
-        // Update filter handlers to use the new list renderer
-        skillFilters.forEach(button => {
-            button.addEventListener('click', () => {
-                const filter = button.getAttribute('data-filter');
-                skillFilters.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                renderSkillsList(filter);
-            });
-        });
-
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.15 });
-
-        const barObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
-                    barObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.25 });
-
-        function hideLoader() {
-            const overlay = document.getElementById('loading-overlay');
-            if (!overlay) return;
-            overlay.classList.add('hidden');
-            // remove after transition to keep DOM clean
-            setTimeout(() => overlay.remove(), 350);
-        }
-
-        window.onload = () => {
-            renderSkillsList('all');
-
-            // Observe any existing reveal-up elements outside the skills list
-            document.querySelectorAll('.reveal-up').forEach(el => revealObserver.observe(el));
-
-            hideLoader();
-        };
-    </script>
 </body>
 </html>
-
-
-
