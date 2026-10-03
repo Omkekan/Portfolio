@@ -113,3 +113,7 @@ h1:hover, h2:hover { animation: glitch .38s steps(1) 1; }
   .skills-card .chip { font-size: 14px; padding: 4px 10px 4px 8px; }
   .skills-card .chip::before { width: 13px; height: 13px; }
 }
+
+/* ===== profile photo: show the whole picture, no cropping ===== */
+.photo-frame { height: auto; width: 100%; max-width: 480px; }
+.photo-frame img { height: auto; object-fit: contain; }
