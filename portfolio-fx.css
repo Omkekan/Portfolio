@@ -1,0 +1,84 @@
+/* ===== portfolio-fx.css — loaded after portfolio.css ===== */
+:root { --lh: 22px; --active: #b9d98f; --icon-file: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 1h5l3 3v7H2z'/%3E%3C/svg%3E"); --icon-folder: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M1 3h4l1 1h5v6H1z'/%3E%3C/svg%3E"); }
+
+/* --- vim-style line grid: every text line is exactly --lh tall --- */
+body { line-height: var(--lh); }
+p { margin: 0 0 var(--lh); }
+h1, h2, h3 { line-height: var(--lh); margin-bottom: var(--lh); }
+h1 { line-height: calc(var(--lh) * 2); }
+ul { margin: 0 0 var(--lh); }
+.status-line { margin-bottom: var(--lh); }
+.photo-frame { height: calc(var(--lh) * 11); margin: 0 0 var(--lh); }
+.photo-frame img { height: 100%; object-fit: cover; }
+#line-numbers .line-num { height: var(--lh); line-height: var(--lh); }
+
+/* --- bullets + explore links like the reference --- */
+ul li::before { content: "> "; }
+a.explore { border-bottom: none; }
+a.explore::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 7px; background: var(--keyword); -webkit-mask: var(--icon-file) center/contain no-repeat; mask: var(--icon-file) center/contain no-repeat; }
+a.explore:hover { border-bottom: none; }
+
+/* --- file tree: icons + solid active row --- */
+.folder::before { content: ""; display: inline-block; width: 12px; height: 11px; margin-right: 6px; background: var(--text-muted); -webkit-mask: var(--icon-folder) center/contain no-repeat; mask: var(--icon-folder) center/contain no-repeat; }
+.nav-item::after { content: ""; position: absolute; left: 6px; top: 50%; width: 10px; height: 10px; margin-top: -5px; background: currentColor; opacity: .55; -webkit-mask: var(--icon-file) center/contain no-repeat; mask: var(--icon-file) center/contain no-repeat; }
+.nav-item { line-height: 16px; }
+.nav-item.active { background: var(--active); color: var(--bg-color); }
+.nav-item.active::after { opacity: .9; }
+.nav-item.active .tag { background: var(--bg-color); }
+
+/* --- global rain canvas (sits behind content on every page) --- */
+#fx-rain { position: fixed; top: 0; bottom: 0; right: 0; left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); height: 100%; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1.6s ease; }
+#fx-rain.on { opacity: 1; }
+@media (max-width: 860px) { #fx-rain { left: 0; width: 100%; } }
+
+/* --- boot sequence --- */
+.boot-bar { min-height: var(--lh); margin-bottom: var(--lh); color: var(--text-muted); white-space: pre; font-size: 11px; }
+.booting #sidebar :is(.breadcrumb, .folder, .nav-item):not(.typed) { visibility: hidden; }
+.booting #hud, .booting #milestones-badge { opacity: 0; }
+#hud, #milestones-badge { transition: opacity .8s ease; }
+
+/* --- HUD + control panel --- */
+#hud { position: fixed; top: 6px; right: 16px; z-index: 1003; display: flex; gap: 16px; font-size: 10px; color: var(--text-muted); line-height: 14px; }
+#hud button { background: none; border: 0; padding: 0; color: inherit; font-size: inherit; cursor: pointer; }
+#hud button:hover, #hud button:focus-visible { color: var(--highlight); }
+#cp, #trophy-panel { position: fixed; z-index: 1003; display: none; background: rgba(21,22,21,.96); border: 1px solid #2a2d2a; font-size: 11px; }
+#cp.open, #trophy-panel.open { display: block; }
+#cp { top: 26px; right: 12px; width: min(300px, 92vw); max-height: 75vh; overflow: auto; padding: 6px 12px 10px; }
+.cp-h { color: var(--text-white); margin-top: 8px; border-bottom: 1px solid #2a2d2a; }
+.cp-h::before { content: ""; display: inline-block; width: 11px; height: 10px; margin-right: 6px; background: var(--keyword); -webkit-mask: var(--icon-folder) center/contain no-repeat; mask: var(--icon-folder) center/contain no-repeat; }
+.cp-row { display: grid; grid-template-columns: 1fr 110px 34px; align-items: center; gap: 8px; line-height: 24px; color: var(--text-main); }
+.cp-row input[type=range] { width: 100%; accent-color: var(--keyword); }
+.cp-row input[type=checkbox] { justify-self: start; accent-color: var(--keyword); }
+.cp-row em { font-style: normal; color: var(--text-muted); text-align: right; }
+
+/* --- trophies (bottom-right) --- */
+#milestones-badge { position: fixed; right: 16px; bottom: 6px; z-index: 1003; margin: 0; padding: 0; border: 0; font-size: 10px; line-height: 14px; }
+#trophy-panel { right: 12px; bottom: 28px; padding: 8px 12px; line-height: 20px; color: var(--text-muted); }
+#trophy-panel .got { color: var(--text-white); }
+#trophy-panel b { font-weight: normal; color: var(--keyword); }
+#trophy-panel span { color: var(--text-muted); margin-left: 6px; }
+
+/* --- toast -> trophy-style, bottom-right --- */
+#toast { left: auto; right: 14px; bottom: 30px; transform: translate(0, 10px); border-color: var(--danger); text-align: left; }
+#toast.show { transform: none; }
+#toast::before { content: "\2605  "; color: var(--danger); }
+
+body.no-scan::after { display: none; }
+@media (prefers-reduced-motion: reduce) { #fx-rain, #hud, #milestones-badge { transition: none; } }
+
+/* --- hero text must be hit-testable for hover scramble --- */
+.hero-center { pointer-events: auto; }
+.hero-center .status-line, .hero-center h1, .hero-center p { cursor: default; }
+
+/* --- keyword chips: tint + icon --- */
+.chip { --c: 138,182,163; --m: none; padding: 0 5px 0 4px; margin: 0 1px; border-radius: 3px; white-space: nowrap; color: rgb(var(--c)); background: rgba(var(--c), .14); }
+.chip::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 5px; vertical-align: -1px; background: currentColor; -webkit-mask: var(--m) center/contain no-repeat; mask: var(--m) center/contain no-repeat; }
+.chip[data-ic=bolt] { --c: 211,181,141; }
+.chip[data-ic=db]   { --c: 138,166,201; }
+.chip[data-ic=web]  { --c: 211,141,141; }
+.chip[data-ic=code] { --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M4 3 1 6l3 3M8 3l3 3-3 3' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E"); }
+.chip[data-ic=term] { --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 3l4 3-4 3M7 9.5h4' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E"); }
+.chip[data-ic=node] { --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6 9 3M3 6l6 3' stroke='%23000' stroke-width='1'/%3E%3Ccircle cx='3' cy='6' r='1.8'/%3E%3Ccircle cx='9' cy='3' r='1.8'/%3E%3Ccircle cx='9' cy='9' r='1.8'/%3E%3C/svg%3E"); }
+.chip[data-ic=bolt] { --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M7 1 2 7h3l-1 4 5-6H6z'/%3E%3C/svg%3E"); }
+.chip[data-ic=db]   { --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cellipse cx='6' cy='3' rx='4' ry='1.7'/%3E%3Cpath d='M2 4.8v2.2c0 .9 1.8 1.7 4 1.7s4-.8 4-1.7V4.8C10 5.7 8.2 6.4 6 6.4S2 5.7 2 4.8zM2 8.3v.9c0 .9 1.8 1.7 4 1.7s4-.8 4-1.7v-.9C10 9.2 8.2 10 6 10S2 9.2 2 8.3z'/%3E%3C/svg%3E"); }
+.chip[data-ic=web]  { --m: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.1'%3E%3Ccircle cx='6' cy='6' r='4.6'/%3E%3Cpath d='M1.4 6h9.2M6 1.4c-2.2 2.6-2.2 6.6 0 9.2M6 1.4c2.2 2.6 2.2 6.6 0 9.2'/%3E%3C/g%3E%3C/svg%3E"); }

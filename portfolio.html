@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" class="booting">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Om Kekan | AI/ML Engineer</title>
+    <meta name="description" content="Om Kekan — AI/ML Engineer building evaluation-driven ML systems, from self-correcting RAG pipelines to production backends.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Om Kekan | AI/ML Engineer">
+    <meta property="og:description" content="Evaluation-driven ML systems — self-correcting RAG pipelines, AI agents, and production backends.">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Om Kekan | AI/ML Engineer">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.8em%22 font-size=%2280%22 font-family=%22monospace%22 font-weight=%22bold%22 fill=%22%238ab6a3%22>&gt;_</text></svg>">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="portfolio.css">
+    <link rel="stylesheet" href="portfolio-fx.css">
+    <link rel="stylesheet" href="portfolio-polish.css">
+    <script src="portfolio-loader.js"></script>
+    <noscript><style>.type-target{visibility:visible!important}.booting #sidebar *{visibility:visible!important}</style></noscript>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Om Kekan",
+      "jobTitle": "AI/ML Engineer",
+      "url": "https://github.com/Omkekan",
+      "sameAs": ["https://github.com/Omkekan", "https://linkedin.com/in/omkekan"]
+    }
+    </script>
+</head>
+<body>
+
+    <button id="menu-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+    </button>
+    <div id="sidebar-backdrop"></div>
+    <canvas id="fx-rain" aria-hidden="true"></canvas>
+
+    <!-- SIDEBAR FILE EXPLORER -->
+    <nav id="sidebar" aria-label="Site sections">
+        <div class="breadcrumb">~/om-kekan/portfolio</div>
+
+        <div class="folder">~/om-kekan</div>
+        <button class="nav-item active" type="button" data-target="index">index</button>
+        <button class="nav-item" type="button" data-target="about">about</button>
+        <button class="nav-item" type="button" data-target="approach">approach</button>
+
+        <div class="folder">~/skills</div>
+        <button class="nav-item" type="button" data-target="skills">overview</button>
+
+        <div class="folder">~/projects</div>
+        <button class="nav-item" type="button" data-target="projects">index</button>
+        <button class="nav-item" type="button" data-target="rag-agent">rag-agent</button>
+        <button class="nav-item" type="button" data-target="vuln-scanner">vuln-scanner</button>
+
+        <div class="folder">~/experience</div>
+        <button class="nav-item" type="button" data-target="experience">index</button>
+
+        <div class="folder">~/lab</div>
+        <button class="nav-item" type="button" data-target="lab">rag-tuner <span class="tag">NEW</span></button>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="folder">~/links</div>
+        <a class="nav-item" href="mailto:omkekan27@gmail.com">contact</a>
+        <a class="nav-item" href="Assets/Om_Kekan_Resume.pdf" target="_blank" rel="noopener">resume</a>
+        <a class="nav-item" href="https://github.com/Omkekan" target="_blank" rel="noopener">github</a>
+        <a class="nav-item" href="https://linkedin.com/in/omkekan" target="_blank" rel="noopener">linkedin</a>
+
+    </nav>
+
+    <!-- MAIN VIEW -->
+    <div id="main-view">
+        <div id="line-numbers" aria-hidden="true"></div>
+
+        <main id="content-area">
+
+            <!-- HOME -->
+            <section id="index" class="content-section active">
+                <div class="rain-wrap">
+                    <div class="hero-center">
+                        <div class="status-line type-target"><span class="dot"></span> open to work &nbsp;<span class="sep">|</span>&nbsp; currently building: multi-agent eval frameworks</div>
+                        <h1 class="type-target white">Om Kekan</h1>
+                        <p class="type-target">AI/ML Engineer &mdash; evaluation-driven ML systems<span class="cursor" aria-hidden="true"></span></p>
+                        <div class="boot-bar" id="boot-bar" aria-hidden="true"></div>
+                        <p class="type-target cmds"><a class="explore" href="#" data-target="projects">./projects</a><a href="Assets/Om_Kekan_Resume.pdf" target="_blank" rel="noopener">cat resume.pdf</a><a href="#" data-target="about">man om</a></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT -->
+            <section id="about" class="content-section">
+                <h2 class="type-target white">About</h2>
+                <p class="type-target">I specialize in building intelligent systems that can evaluate their own outputs. Whether constructing retrieval-augmented pipelines or automating data classification, my focus is bridging the gap between theoretical AI models and reliable, scalable production systems.</p>
+
+                <div class="type-target photo-frame">
+                    <img src="Assets/Profile%20Picture.jpeg" alt="Om Kekan">
+                </div>
+
+                <p class="type-target"><strong class="white">What I build</strong></p>
+                <p class="type-target">Systems that check their own work &mdash; <span class="highlight">self-correcting RAG pipelines</span>, <span class="highlight">hallucination guardrails</span>, and <span class="highlight">risk-prioritization engines</span> that hold up outside a demo.</p>
+
+                <p class="type-target"><strong class="white">Currently</strong></p>
+                <p class="type-target">Building out multi-agent evaluation frameworks &mdash; quantifying agent reliability instead of eyeballing a few transcripts.</p>
+            </section>
+
+            <!-- APPROACH -->
+            <section id="approach" class="content-section">
+                <h2 class="type-target white">Approach</h2>
+                <p class="type-target">Most RAG and agent systems ship on vibes &mdash; a handful of prompts that looked good in a demo. I build the evaluation harness first: relevance grading, hallucination checks, retry logic. Reliability should be measured, not assumed.</p>
+
+                <p class="type-target"><strong class="white">Core technologies</strong></p>
+                <ul>
+                    <li class="type-target"><span class="keyword">Python</span></li>
+                    <li class="type-target"><span class="keyword">TensorFlow</span> / <span class="keyword">PyTorch</span></li>
+                    <li class="type-target"><span class="keyword">LangChain</span> / <span class="keyword">LangGraph</span></li>
+                    <li class="type-target"><span class="keyword">Flask</span> / <span class="keyword">Next.js</span></li>
+                </ul>
+
+                <p class="type-target"><strong class="white">Preferred tools</strong></p>
+                <ul>
+                    <li class="type-target"><span class="highlight">Ollama</span> &mdash; local inference for fast iteration</li>
+                    <li class="type-target"><span class="highlight">RAGAS</span> &mdash; retrieval &amp; generation evaluation</li>
+                    <li class="type-target"><span class="highlight">Qdrant</span> &mdash; vector storage</li>
+                    <li class="type-target"><span class="highlight">PostgreSQL</span> &mdash; everything that needs to be durable</li>
+                </ul>
+            </section>
+
+            <!-- SKILLS -->
+            <section id="skills" class="content-section">
+                <h2 class="type-target white">Skills</h2>
+                <div class="skills-card">
+                    <div class="type-target sk-brace">skills = {</div>
+                    <div class="type-target sk-row"><span class="sk-key">languages</span> <span class="sk-items"><span class="chip" data-ic="code">Python</span> <span class="chip" data-ic="code">Java</span> <span class="chip" data-ic="code">JavaScript</span> <span class="chip" data-ic="db">SQL</span> <span class="chip" data-ic="web">HTML/CSS</span></span></div>
+                    <div class="type-target sk-row"><span class="sk-key">core_ml</span> <span class="sk-items"><span class="chip" data-ic="node">TensorFlow</span> <span class="chip" data-ic="node">PyTorch</span> <span class="chip" data-ic="node">Scikit-learn</span> <span class="chip" data-ic="node">NumPy</span> <span class="chip" data-ic="node">Pandas</span> <span class="chip" data-ic="node">Computer Vision</span> <span class="chip" data-ic="code">NLP</span></span></div>
+                    <div class="type-target sk-row"><span class="sk-key">gen_ai</span> <span class="sk-items"><span class="chip" data-ic="bolt">LangChain</span> <span class="chip" data-ic="bolt">LangGraph</span> <span class="chip" data-ic="bolt">RAGAS</span> <span class="chip" data-ic="bolt">Ollama</span> <span class="chip" data-ic="bolt">LLMs</span> <span class="chip" data-ic="bolt">Generative AI</span> <span class="chip" data-ic="bolt">RAG</span></span></div>
+                    <div class="type-target sk-row"><span class="sk-key">backend</span> <span class="sk-items"><span class="chip" data-ic="web">Flask</span> <span class="chip" data-ic="web">Next.js</span> <span class="chip" data-ic="web">Celery</span> <span class="chip" data-ic="db">Redis</span> <span class="chip" data-ic="db">Qdrant</span></span></div>
+                    <div class="type-target sk-row"><span class="sk-key">tools</span> <span class="sk-items"><span class="chip" data-ic="db">MySQL</span> <span class="chip" data-ic="db">PostgreSQL</span> <span class="chip" data-ic="node">Git</span> <span class="chip" data-ic="node">GitHub</span> <span class="chip" data-ic="term">Linux</span></span></div>
+                    <div class="type-target sk-row"><span class="sk-key">security</span> <span class="sk-items"><span class="chip" data-ic="term">Vulnerability Assessment</span> <span class="chip" data-ic="term">Information Security</span></span></div>
+                    <div class="type-target sk-brace">}</div>
+                </div>
+            </section>
+
+            <!-- PROJECTS INDEX -->
+            <section id="projects" class="content-section">
+                <h2 class="type-target white">Projects</h2>
+                <p class="type-target">Two systems built around the same idea &mdash; don't trust an output you haven't checked.</p>
+                <ul>
+                    <li class="type-target"><a href="#" data-target="rag-agent">rag-agent</a>: self-correcting RAG pipeline with hallucination guardrails</li>
+                    <li class="type-target"><a href="#" data-target="vuln-scanner">vuln-scanner</a>: risk-prioritization engine for security feeds</li>
+                </ul>
+
+                <p class="type-target"><strong class="white">Smaller projects</strong></p>
+                <ul>
+                    <li class="type-target"><a href="https://github.com/Omkekan/Text-classification-for-News-Articals" target="_blank" rel="noopener">text-classification</a>: NLP model that categorizes news articles by topic (Python, Scikit-learn, Pandas)</li>
+                    <li class="type-target"><a href="https://github.com/Omkekan/network-scanner" target="_blank" rel="noopener">network-scanner</a>: multithreaded TCP SYN port scanner (Python, Scapy)</li>
+                </ul>
+            </section>
+
+            <!-- RAG AGENT PROJECT -->
+            <section id="rag-agent" class="content-section">
+                <h2 class="type-target white">Autonomous RAG Agent</h2>
+                <p class="type-target">Self-correcting pipeline in LangGraph with retrieval-relevance grading and automatic query rewriting.</p>
+
+                <div class="lab-diagram">
+                    <div class="lab-node on">QUERY</div><div class="lab-arrow">&#8594;</div><div class="lab-node on">RETRIEVE</div><div class="lab-arrow">&#8594;</div><div class="lab-node on">GRADE</div><div class="lab-arrow">&#8594;</div><div class="lab-node on">GENERATE</div><div class="lab-arrow">&#8594;</div><div class="lab-node on">ANSWER</div>
+                </div>
+                <p class="term-label">sample trace (illustrative)</p>
+                <pre class="term"><span class="cmd">$ run --q "what changed in v2?"</span>
+retrieve
+<span class="bad">grade      0.41 &lt; 0.62, rewrite (1/2)</span>
+retrieve
+<span class="ok">grade      0.78 &gt;= 0.62, generate</span>
+<span class="bad">verify     1 unsupported claim, regenerate</span>
+<span class="ok">verify     all claims supported, answer</span></pre>
+                <p class="type-target"><strong class="white">The problem</strong><br>
+                Standard RAG pipelines retrieve context and blindly answer. If the context doesn't contain the answer, they fail silently &mdash; straight into a hallucination.</p>
+
+                <p class="type-target"><strong class="white">The architecture</strong><br>
+                A LangGraph state machine. Retrieved documents are graded for relevance before generation runs. If nothing relevant turns up, the query is automatically rewritten and re-retrieved. Generated answers are checked against the retrieved context, and unsupported claims trigger a regeneration pass. A final check confirms the answer actually addresses the question. Each retry path is capped at 2 attempts; when they run out, the agent says it doesn&rsquo;t have enough information instead of guessing.</p>
+
+                <p class="type-target"><strong class="white">Stack</strong><br>
+                <span class="keyword">LangGraph</span> for orchestration, <span class="keyword">Qdrant</span> (hybrid dense + sparse search) as the vector store, <span class="keyword">Ollama</span> for local inference, <span class="keyword">RAGAS</span> for evaluation.</p>
+
+                <p class="type-target"><a href="https://github.com/Omkekan/Auto-RAG-Agent-with-Hallucination-Guardrails" target="_blank" rel="noopener">View source &#8594;</a> &nbsp; <a href="#" data-target="lab">Try it tuned &#8594;</a></p>
+
+                <p class="type-target" style="margin-top: 20px;"><a class="explore" href="#" data-target="vuln-scanner">Next project: vuln-scanner &#8594;</a></p>
+            </section>
+
+            <!-- VULN SCANNER PROJECT -->
+            <section id="vuln-scanner" class="content-section">
+                <h2 class="type-target white">Web Vuln Scanner</h2>
+                <p class="type-target">Risk-prioritization engine correlating 3+ security feeds (CVE, CWE, Exploit-DB), cutting vulnerability noise by an estimated 90% versus raw scanner output.</p>
+
+                <div class="stat"><span class="stat-n">~90%</span><span class="stat-l">estimated less vulnerability noise<br>versus raw scanner output</span></div>
+                <div class="lab-diagram">
+                    <div class="lab-node on">FEEDS (3+)</div><div class="lab-arrow">&#8594;</div><div class="lab-node on">CORRELATE</div><div class="lab-arrow">&#8594;</div><div class="lab-node on">RISK SCORE</div><div class="lab-arrow">&#8594;</div><div class="lab-node on">PRIORITIZED</div>
+                </div>
+
+                <p class="type-target"><strong class="white">The problem</strong><br>
+                Running multiple security scanners produces overlapping, high-volume alerts. Real risks get buried under duplicate and low-priority noise.</p>
+
+                <p class="type-target"><strong class="white">The architecture</strong><br>
+                Correlates CVE, CWE and Exploit-DB data with scan results, then scores each finding by severity, asset criticality and public exploit availability instead of surfacing a raw combined feed. Nmap scans run asynchronously on Celery/Redis workers so the interface stays responsive.</p>
+
+                <p class="type-target"><strong class="white">Stack</strong><br>
+                <span class="keyword">Flask</span> + <span class="keyword">Next.js</span> for the app, <span class="keyword">Celery</span> + <span class="keyword">Redis</span> for the async pipeline, <span class="keyword">PostgreSQL</span> for storage.</p>
+
+                <p class="type-target"><a href="https://github.com/Omkekan/Riskreveal-Vulnerability-scanner" target="_blank" rel="noopener">View source &#8594;</a></p>
+
+                <p class="type-target" style="margin-top: 20px;"><a class="explore" href="#" data-target="rag-agent">Next project: rag-agent &#8594;</a></p>
+            </section>
+
+            <!-- EXPERIENCE -->
+            <section id="experience" class="content-section">
+                <h2 class="type-target white">Experience &amp; Education</h2>
+
+                <p class="type-target"><strong class="white">Operational Assistant Intern</strong> &mdash; Inspira Technologies <span class="text-muted">(4 months)</span></p>
+                <p class="type-target">Built and maintained backend services in Python and Flask, including API endpoints, and a chatbot module that automates responses to common user queries. Also worked on debugging, testing, code reviews and internal documentation.</p>
+
+                <p class="type-target"><strong class="white">B.Tech, AI &amp; ML</strong> &mdash; IICT MGMU <span class="text-muted">(Oct 2021 &ndash; Aug 2026)</span></p>
+                <p class="type-target"><strong class="white">Certifications</strong></p>
+                <ul>
+                    <li class="type-target">Deep Learning Specialization &mdash; DeepLearning.AI <span class="text-muted">(in progress)</span></li>
+                    <li class="type-target">Introduction to Large Language Models &mdash; Google</li>
+                    <li class="type-target">Generative AI Fundamentals &mdash; Google</li>
+                    <li class="type-target">Google Cybersecurity Professional Certificate</li>
+                </ul>
+            </section>
+
+            <!-- LAB -->
+            <section id="lab" class="content-section">
+                <h2 class="type-target white">Field study &mdash; RAG agent, made tunable</h2>
+                <p class="type-target">Most portfolios show a static diagram. Move the controls below and watch the retry loop actually respond.</p>
+
+                <div class="lab-diagram" id="lab-diagram">
+                    <div class="lab-node" data-node="query">QUERY</div>
+                    <div class="lab-arrow">&#8594;</div>
+                    <div class="lab-node" data-node="retrieve">RETRIEVE</div>
+                    <div class="lab-arrow">&#8594;</div>
+                    <div class="lab-node" data-node="grade">GRADE</div>
+                    <div class="lab-arrow">&#8594;</div>
+                    <div class="lab-node" data-node="generate">GENERATE</div>
+                    <div class="lab-arrow">&#8594;</div>
+                    <div class="lab-node" data-node="answer">ANSWER</div>
+                </div>
+                <div class="lab-loops" id="lab-loops">
+                    <span class="loop-tag" data-loop="rewrite">&#8634; rewrite query</span>
+                    <span class="loop-tag" data-loop="regenerate">&#8634; regenerate</span>
+                </div>
+
+                <div class="lab-controls">
+                    <label for="lab-threshold">relevance threshold: <span id="lab-threshold-val">62</span>/100</label>
+                    <input id="lab-threshold" type="range" min="0" max="100" value="62">
+
+                    <label class="checkbox-label"><input id="lab-force" type="checkbox"> force a hallucination</label>
+
+                    <div class="lab-status" id="lab-status">context relevant (62/100) and answer passed verification.</div>
+                </div>
+
+                <div class="lab-trace">
+                    <button id="lab-run" type="button">run query</button>
+                    <div class="term" id="lab-log" aria-live="off"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div class="milestones" id="milestones-badge" tabindex="0" role="button" aria-expanded="false">Trophies [<span id="milestones-count">0/5</span>] <span class="tag-muted">[+]</span></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <script src="portfolio-fx.js" defer></script>
+    <script src="portfolio.js" defer></script>
+    <script src="portfolio-polish.js" defer></script>
+</body>
+</html>
